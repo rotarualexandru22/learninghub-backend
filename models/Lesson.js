@@ -14,7 +14,7 @@ const lessonSchema = new mongoose.Schema({
         type: String
     },
     videoUrl: {
-        type: String, // Link to YouTube, Vimeo, or Cloudinary
+        type: String, 
         required: true
     },
     duration: {

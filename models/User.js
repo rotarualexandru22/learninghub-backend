@@ -2,76 +2,35 @@ const mongoose = require('mongoose');
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
-  firstName: { 
-    type: String, 
-    required: true, 
-    trim: true 
-  },
-  lastName: { 
-    type: String, 
-    required: true, 
-    trim: true 
-  },
-  email: { 
-    type: String, 
-    required: true, 
-    unique: true, 
-    lowercase: true 
-  },
-  password: { 
-    type: String, 
-    required: true, 
-    minlength: 6 
-  },
-  username: { 
-    type: String, 
-    required: true, 
-    unique: true, 
-    minlength: 3 
-  },
-  role: {
-    type: String,
-    enum: ["user", "admin"],
-    default: "user"
-  },
-  // Badge system
-  badgeLevel: { 
-    type: String, 
-    enum: ['None', 'Beginner', 'Intermediate', 'Advanced'], 
-    default: 'None' 
-  },
-  completedCourses: { 
-    type: Number, 
-    default: 0 
-  },
-  avatar: {
-    type: String,
-    default: null
-  },
+  firstName: { type: String, required: true, trim: true },
+  lastName: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true },
+  password: { type: String, required: true, minlength: 6 },
+  username: { type: String, required: true, unique: true, minlength: 3 },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
   
-  // =========================================================================
-  // SECURE RESET PASSWORD VECTORS (ADĂUGATE ACUM)
-  // =========================================================================
-  resetPasswordToken: { 
-    type: String, 
-    default: null 
-  },
-  resetPasswordExpires: { 
-    type: Date, 
-    default: null 
-  }
+  // SYSTEM INTEGRATION: Badges array used in the interface
+  badges: { type: [String], default: [] },
+  
+  // SYSTEM INTEGRATION: Courses that the student enrolled to
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
+  
+  badgeLevel: { type: String, enum: ['None', 'Beginner', 'Intermediate', 'Advanced'], default: 'None' },
+  completedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }], // Schimbat în array pentru precizie
+  avatar: { type: String, default: null },
+  
+  resetPasswordToken: { type: String, default: null },
+  resetPasswordExpires: { type: Date, default: null }
 }, { timestamps: true });
 
-// Hash logic (Middleware)
+// Hash (Middleware)
 userSchema.pre("save", async function() {
-  // If the password hasn't been modified, we continue
   if (!this.isModified("password")) return;
-
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   } catch (err) {
-    throw err; // The error is thrown to Mongoose
+    throw err;
   }
 });
 

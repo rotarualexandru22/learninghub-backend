@@ -1,5 +1,8 @@
 const Joi = require('joi');
 
+/**
+ * Validate user data payloads during the registration process.
+ */
 const registerValidation = (data) => {
     const schema = Joi.object({
         firstName: Joi.string().min(2).required(),
@@ -12,20 +15,24 @@ const registerValidation = (data) => {
     return schema.validate(data);
 };
 
-// Course Validation
+/**
+ * Validate data payloads during course node creation.
+ */
 const courseValidation = (data) => {
     const schema = Joi.object({
         title: Joi.string().min(5).max(100).required(),
         description: Joi.string().min(20).required(),
-        thumbnail: Joi.string().uri(), // Verifică dacă e un link valid
+        thumbnail: Joi.string().uri(), 
         instructor: Joi.string().required(),
         category: Joi.string().required(),
-        level: Joi.string().valid('Beginner', 'Intermediate', 'Advanced') // Doar astea 3 sunt permise
+        level: Joi.string().valid('Beginner', 'Intermediate', 'Advanced') 
     });
     return schema.validate(data);
 };
 
-// Lesson Validation
+/**
+ * Validate structural lesson nodes attached to a course ledger.
+ */
 const lessonValidation = (data) => {
     const schema = Joi.object({
         courseId: Joi.string().required(),
