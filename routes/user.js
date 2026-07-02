@@ -6,7 +6,6 @@ const User = require('../models/User');
 // Security middleware assignments
 const verify = require('../middleware/verifyToken'); 
 const verifyAdmin = require('../middleware/verifyAdmin'); 
-const jwt = require('jsonwebtoken'); // Ensure jsonwebtoken is explicitly imported for avatar route decoding
 
     /**
      * GET USER PROFILE
